@@ -1,0 +1,6 @@
+RegionName,MinLon,MaxLon,MinLat,MaxLat
+Amazon_Rainforest,-70.0,-50.0,-10.0,0.0
+Sahara_Desert,0.0,25.0,15.0,30.0
+Himalayas,80.0,90.0,25.0,35.0
+Great_Barrier_Reef,145.0,155.0,-25.0,-15.0
+Yosemite,-119.8,-119.4,37.5,38.0

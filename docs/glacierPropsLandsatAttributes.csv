@@ -1,0 +1,13 @@
+Attribute,Description,Unit
+Name,Glacier name,N/A
+GLIMS,Global Land Ice Measurements from Space identifier,N/A
+RGI60.01,Randolph Glacier Inventory version 6.0 region 01 identifier,N/A
+Region,Portion of the glacier covered by the bounding box,N/A
+LonCenter,Longitude of the center of the bounding box leafletLon from glacierProps.csv,degrees
+LatCenter,Latitude of the center of the bounding box leafletLat from glacierProps.csv,degrees
+LonMin,Longitude minimum of the bounding box,degrees
+LonMax,Longitude maximum of the bounding box,degrees
+LatMin,Latitude minimum of the bounding box,degrees
+LatMax,Latitude maximum of the bounding box,degrees
+x1 etc. Longitude of corners of the bounding box rectangle when it is in UTM8N calculated in test_proj.ipynb,degrees
+y1 etc. Latitude of corners of the bounding box rectangle when it is in UTM8N calculated in test_proj.ipynb,degrees
