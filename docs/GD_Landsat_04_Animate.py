@@ -73,8 +73,8 @@ glaciers = pd.read_csv(file_path) #contains Name, LatCenter, LonCenter, two type
 glaciers['Name']
 
 #choose one glacier
-glacier = glaciers.iloc[0] #0=Margerie, 12=McBride
-glacierdf=glaciers.iloc[[0]]
+glacier = glaciers.iloc[12] #0=Margerie, 12=McBride
+glacierdf=glaciers.iloc[[12]]
 print('You chose: ' + glacier['Name'])
 folder_out=os.path.join(folder_shp, glacier['Name'])
 folder_fig=os.path.join(folder_out, 'Figures')
@@ -268,7 +268,7 @@ ax.axis('off')  # Hide the axis
 
 # nimages=len(images)
 nimages=len(times)
-nimages=30 #testing
+# nimages=30 #testing
 fps=15
 duration=nimages/fps
 # Create the animation (shell)
@@ -278,29 +278,16 @@ ani.save(file_mp4, writer='ffmpeg', fps=fps)
 
 print(f"Animation saved as {file_mp4}")
 
-#2025-12-2 MovieWriter ffmpeg unavailable; using Pillow instead.
-#Then I got a ValueError: unknown file extension: .mp4
-#trying with Pillow
-file_gif= file_mp4.with_suffix(".gif")
-ani.save(
-    file_gif,
-    #Grok example code not quite analogous
-    #save_all=True,
-    #append_images=ani[1:],
-    #duration=66.666,      #80 gives ~12.5 fps = 1/80*1000. # milliseconds between frames (100 = 10 fps)
-    #loop=0,
-    #optimize=True     # Reduces file size
-    fps=fps
-)
-
 # Timing
 # for i in range(1000000):
 #     pass
 t_end = stopwatch.time()
-print(f"n={n_images}. Timing (sec): exif: {t_exif-t_start:.2f}, load: {t_load-t_exif:.2f}, anim: {t_end - t_load:.2f}, total elapsed: {t_end - t_start:.2f}.")
+print(f"n={n_images}. Timing (sec): load: {t_load-t_start:.2f}, anim: {t_end - t_load:.2f}, total elapsed: {t_end - t_start:.2f}.")
 
 #############
 #Notes
 #############
-# 20250818_McBride_1_Terminus_Wing_all.mp4
-# n=2399. Timing (sec): exif: 18.82, load: 6.18, anim: 3767.98, total elapsed: 3792.99.
+#OLD: 20250818_McBride_1_Terminus_Wing_all.mp4
+#OLD: n=2399. Timing (sec): exif: 18.82, load: 6.18, anim: 3767.98, total elapsed: 3792.99.
+
+# n=590. Timing (sec): load: 1771913641.61, anim: 8.42, total elapsed: 17.02.
