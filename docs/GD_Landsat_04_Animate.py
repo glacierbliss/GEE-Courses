@@ -66,7 +66,8 @@ def add_timestamp(image, timestamp):
 #setup
 #############
 folder_base = r'C:\Users\andyb\Documents\U\SEAN_Glacier-Dynamics' #os.path.join()
-folder_shp = r'C:\Users\andyb\Documents\U\GEE-Courses\data'
+#folder_shp = r'C:\Users\andyb\Documents\U\GEE-Courses\data' #get away from this...
+folder_land = r'C:\Users\andyb\Documents\U\GlacierLandsat'
 file_path=os.path.join(folder_base,'glacierPropsLandsat.csv')
 
 glaciers = pd.read_csv(file_path) #contains Name, LatCenter, LonCenter, two types of bounding boxes (see GD_Landsat_01_Setup).
@@ -76,31 +77,69 @@ glaciers['Name']
 glacier = glaciers.iloc[12] #0=Margerie, 12=McBride
 glacierdf=glaciers.iloc[[12]]
 print('You chose: ' + glacier['Name'])
-folder_out=os.path.join(folder_shp, glacier['Name'])
-folder_fig=os.path.join(folder_out, 'Figures')
-folder_anim=os.path.join(folder_out, 'Anim')
-#create folder_anim if it doesn't exist
-if not os.path.exists(folder_anim):
-  os.makedirs(folder_anim)
+glacierName_Region = glacier['Name'] + '_' + glacier['Region']
+folder_out=os.path.join(folder_land, glacierName_Region)
+# folder_fig=os.path.join(folder_out, 'Figures') #get away from this... #now just use folder_out
+# folder_anim=os.path.join(folder_out, 'Anim') #get away from this... #now just use folder_out
+# #create folder_anim if it doesn't exist
+# if not os.path.exists(folder_anim):
+#   os.makedirs(folder_anim)
 
 # load metadata from CSV
-file_meta = os.path.join(folder_out, 'LandsatMetadata.csv')
+file_meta = os.path.join(folder_out, glacierName_Region + '_' + 'LandsatMetadata.csv')
 mdf = pd.read_csv(file_meta, parse_dates=['DATE_ACQUIRED', 'datetime'])
-#file_metaBackup = os.path.join(folder_out, 'LandsatMetadataBackup.csv')
+#file_metaBackup = os.path.join(folder_out, glacierName_Region + '_' + 'LandsatMetadataBackup.csv')
 #mdf.to_csv(file_metaBackup, index=False)
 
 print(f"Image info loaded from: {file_meta}") #and backed up to: {file_metaBackup}")
 print(mdf.dtypes) #variable datetime has type datetime64[ns]
 mdf.iloc[0]
-mdf['ImagePath'][0] #image path has the whole path.
+
+if False:
+  #find and replace
+  #have: mdf['ImagePath'].iloc[1]
+  #'C:\\Users\\andyb\\Documents\\U\\GEE-Courses\\data\\Margerie\\19840619_LANDSAT_LT05_C02_T1_TOA_LT05_060019_19840619.png'
+  #want:
+  'C:\\Users\\andyb\\Documents\\U\\GlacierLandsat\\Margerie_Terminus\\19840619_LANDSAT_LT05_C02_T1_TOA_LT05_060019_19840619.png'
+  
+  # #!!! headache !!!
+  # #works:
+  # mdf['ImagePath'].iloc[0]=mdf['ImagePath'].iloc[0].replace('M','Z') #image path has the whole path.
+  # #works:
+  # mdf.loc[0,'ImagePath']=mdf.loc[0,'ImagePath'].replace('GEE-Courses','asdf') #image path has the whole path.
+  # #fails to change anything:
+  # mdf.loc[0,'ImagePath']=mdf.loc[0,'ImagePath'].replace('asdf\\data','qwer') #image path has the whole path.
+  # #str object has no attribute str:
+  # mdf.loc[0,'ImagePath']=mdf.loc[0,'ImagePath'].str.replace('asdf\\data','qwer',regex=False) #image path has the whole path.
+  # 
+  # #replace old string with new (will be obsolete as soon as I migrate old folders over)
+  # mdf2=mdf.copy()
+  # #fails-nothing happens
+  # mdf.loc['ImagePath'] = mdf['ImagePath'].str.replace(r'C:\\Users\\andyb\\Documents\\U\\GEE-Courses\\data\\Margerie\\','C:\\Users\\andyb\\Documents\\U\\GlacierLandsat\\Margerie_Terminus\\',regex=False)
+  # #fails syntax
+  # mdf.loc['ImagePath'] = mdf['ImagePath'].str.replace(r'C:\Users\andyb\Documents\U\GEE-Courses\data\Margerie\',r'C:\Users\andyb\Documents\U\GlacierLandsat\Margerie_Terminus\',regex=False)
+  
+  #Is \\ just for console display, but it's actually storing as \?
+  
+  # Define the old and new path segments
+  old_segment = r'C:\Users\andyb\Documents\U\GEE-Courses\data\Margerie'
+  new_segment = r'C:\Users\andyb\Documents\U\GlacierLandsat\Margerie_Terminus\Images'
+  old_segment = r'C:\Users\andyb\Documents\U\GEE-Courses\data\McBride'
+  new_segment = r'C:\Users\andyb\Documents\U\GlacierLandsat\McBride_Terminus\Images'
+  # Perform the replacement on the whole column
+  mdf['ImagePath'] = mdf['ImagePath'].str.replace(old_segment, new_segment, regex=False)
+  # #see result
+  mdf['ImagePath'].iloc[0]
+  mdf['ImagePath'].iloc[1]
+  
+  mdf.to_csv(file_meta, index=False)
+
 #check if there's a keep column, otherwise error
 if 'Keep?' not in mdf.columns:
     raise Exception("Metadata does not include Keep column. Run GD_Landsat_03_Select first.")
 
 #construct folder and file names
-# folder_image=folder_out
-# folder_image=Path(folder_base,year,folder_name)
-file_mp4 = Path(folder_anim,'LandsatAnim.mp4')
+file_mp4 = Path(folder_out,glacierName_Region + '_LandsatAnim.mp4')
 print(f'Loading from\n{folder_out}\nand saving to\n{file_mp4}.')
 
 # Timing
@@ -184,13 +223,13 @@ draw.text((40, 240), text, fill="orange", font=font) #was 80,80 white
 # plt.show()
 
 # Save the image
-image.save(Path(folder_anim,glacier['Name']+'_TitleSlide.png'))
+image.save(Path(folder_out,glacierName_Region+'_TitleSlide.png'))
 
 n_images=len(mdf)
 n_images
 #repeat title slide 15 times so it is readable
 image_files=list(mdf['ImagePath']) #kept it in a dataframe long enough, now going to list to match GD_TLAN.py
-image_files=[str(Path(folder_anim,glacier['Name']+'_TitleSlide.png'))]*15+image_files
+image_files=[str(Path(folder_out,glacierName_Region+'_TitleSlide.png'))]*15+image_files
 times=list(mdf['datetime'])
 times = [times[0]] * 15 + times
 len(times)
@@ -290,4 +329,8 @@ print(f"n={n_images}. Timing (sec): load: {t_load-t_start:.2f}, anim: {t_end - t
 #OLD: 20250818_McBride_1_Terminus_Wing_all.mp4
 #OLD: n=2399. Timing (sec): exif: 18.82, load: 6.18, anim: 3767.98, total elapsed: 3792.99.
 
+#malformed:
 # n=590. Timing (sec): load: 1771913641.61, anim: 8.42, total elapsed: 17.02.
+#line-by-line running code:
+#n=590. Timing (sec): load: 51.36, anim: 408.11, total elapsed: 459.47.
+
