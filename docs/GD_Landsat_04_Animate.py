@@ -74,8 +74,8 @@ glaciers = pd.read_csv(file_path) #contains Name, LatCenter, LonCenter, two type
 glaciers['Name']
 
 #choose one glacier
-glacier = glaciers.iloc[12] #0=Margerie, 12=McBride
-glacierdf=glaciers.iloc[[12]]
+glacier = glaciers.iloc[42] #0=Margerie, 12=McBride
+glacierdf=glaciers.iloc[[42]]
 print('You chose: ' + glacier['Name'])
 glacierName_Region = glacier['Name'] + '_' + glacier['Region']
 folder_out=os.path.join(folder_land, glacierName_Region)
@@ -140,7 +140,7 @@ if 'Keep?' not in mdf.columns:
 
 #construct folder and file names
 file_mp4 = Path(folder_out,glacierName_Region + '_LandsatAnim.mp4')
-print(f'Loading from\n{folder_out}\nand saving to\n{file_mp4}.')
+print(f'Loading from\n{folder_out+'\Images'}\nand saving to\n{file_mp4}.')
 
 # Timing
 t_start = stopwatch.time()
@@ -333,4 +333,6 @@ print(f"n={n_images}. Timing (sec): load: {t_load-t_start:.2f}, anim: {t_end - t
 # n=590. Timing (sec): load: 1771913641.61, anim: 8.42, total elapsed: 17.02.
 #line-by-line running code:
 #n=590. Timing (sec): load: 51.36, anim: 408.11, total elapsed: 459.47.
+#Mendenhall
+# n=517. Timing (sec): load: 0.68, anim: 97.19, total elapsed: 97.87.
 
