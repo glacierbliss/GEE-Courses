@@ -85,8 +85,10 @@ folder_out=os.path.join(folder_land, glacierName_Region)
 # if not os.path.exists(folder_anim):
 #   os.makedirs(folder_anim)
 
-# load metadata from CSV
-file_meta = os.path.join(folder_out, glacierName_Region + '_' + 'LandsatMetadata.csv')
+#Choose whether to load SLC-off
+#Load metadata from CSV
+# file_meta = os.path.join(folder_out, glacierName_Region + '_' + 'LandsatMetadata.csv')
+file_meta = os.path.join(folder_out, glacierName_Region + '_LandsatMetadataExcludeSLC-off.csv')
 mdf = pd.read_csv(file_meta, parse_dates=['DATE_ACQUIRED', 'datetime'])
 #file_metaBackup = os.path.join(folder_out, glacierName_Region + '_' + 'LandsatMetadataBackup.csv')
 #mdf.to_csv(file_metaBackup, index=False)
@@ -305,6 +307,8 @@ ax = fig.add_axes([0, 0, 1, 1])  # Full size
 ax.axis('off')  # Hide the axis
 #AKB verified that this results in proper aspect ratio.
 
+print('Animation animating...')
+
 # nimages=len(images)
 nimages=len(times)
 # nimages=30 #testing
@@ -335,4 +339,9 @@ print(f"n={n_images}. Timing (sec): load: {t_load-t_start:.2f}, anim: {t_end - t
 #n=590. Timing (sec): load: 51.36, anim: 408.11, total elapsed: 459.47.
 #Mendenhall
 # n=517. Timing (sec): load: 0.68, anim: 97.19, total elapsed: 97.87.
-
+#Lemon Creek
+#n=535. Timing (sec): load: 0.24, anim: 127.57, total elapsed: 127.82.
+#Lemon Creek Exclude SLC-off
+#n=369. Timing (sec): load: 0.25, anim: 83.85, total elapsed: 84.10.
+# Margerie_Terminus_LandsatAnim.mp4
+# n=465. Timing (sec): load: 0.25, anim: 179.70, total elapsed: 179.95.
