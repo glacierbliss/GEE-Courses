@@ -1,3 +1,5 @@
+AKB note to self: look in collection2 branch for my files.
+
 # GEE-Courses
 
 [![image](https://img.shields.io/pypi/v/geemap.svg)](https://pypi.python.org/pypi/geemap)
