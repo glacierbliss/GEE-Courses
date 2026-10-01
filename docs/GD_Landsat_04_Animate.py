@@ -74,8 +74,8 @@ glaciers = pd.read_csv(file_path) #contains Name, LatCenter, LonCenter, two type
 glaciers['Name']
 
 #choose one glacier
-glacier = glaciers.iloc[42] #0=Margerie, 12=McBride
-glacierdf=glaciers.iloc[[42]]
+glacier = glaciers.iloc[3] #0=Margerie, 12=McBride
+glacierdf=glaciers.iloc[[3]]
 print('You chose: ' + glacier['Name'])
 glacierName_Region = glacier['Name'] + '_' + glacier['Region']
 folder_out=os.path.join(folder_land, glacierName_Region)
@@ -85,10 +85,19 @@ folder_out=os.path.join(folder_land, glacierName_Region)
 # if not os.path.exists(folder_anim):
 #   os.makedirs(folder_anim)
 
+#choose to exclude SLC-off images from the animation
+flagExcludeSLC_off=True #True or False
+flagExcludePR=True
+
 #Choose whether to load SLC-off
 #Load metadata from CSV
-# file_meta = os.path.join(folder_out, glacierName_Region + '_' + 'LandsatMetadata.csv')
-file_meta = os.path.join(folder_out, glacierName_Region + '_LandsatMetadataExcludeSLC-off.csv')
+if flagExcludeSLC_off & flagExcludePR:
+  file_meta = os.path.join(folder_out, glacierName_Region + '_LandsatMetadataExcludeSLC-offExcludeSLC-offExcludePath.csv')
+else if flagExcludeSLC_off:
+  file_meta = os.path.join(folder_out, glacierName_Region + '_LandsatMetadataExcludeSLC-off.csv')
+else:
+  file_meta = os.path.join(folder_out, glacierName_Region + '_' + 'LandsatMetadata.csv')
+
 mdf = pd.read_csv(file_meta, parse_dates=['DATE_ACQUIRED', 'datetime'])
 #file_metaBackup = os.path.join(folder_out, glacierName_Region + '_' + 'LandsatMetadataBackup.csv')
 #mdf.to_csv(file_metaBackup, index=False)
@@ -141,8 +150,13 @@ if 'Keep?' not in mdf.columns:
     raise Exception("Metadata does not include Keep column. Run GD_Landsat_03_Select first.")
 
 #construct folder and file names
-file_mp4 = Path(folder_out,glacierName_Region + '_LandsatAnim.mp4')
-print(f'Loading from\n{folder_out+'\Images'}\nand saving to\n{file_mp4}.')
+if flagExcludeSLC_off & flagExcludePR:
+  file_mp4 = Path(folder_out,glacierName_Region + '_LandsatAnim.mp4')
+else if flagExcludeSLC_off:
+  file_mp4 = Path(folder_out,glacierName_Region + '_LandsatAnimIncludeAllPathRow.mp4')
+else:
+  file_mp4 = Path(folder_out,glacierName_Region + '_LandsatAnimInclude_SLC-offIncludeAllPathRow.mp4')
+print(f'Loading from\n{folder_out}\\Images\nand saving to\n{file_mp4}.') #\\ escapes the slash
 
 # Timing
 t_start = stopwatch.time()
@@ -345,3 +359,7 @@ print(f"n={n_images}. Timing (sec): load: {t_load-t_start:.2f}, anim: {t_end - t
 #n=369. Timing (sec): load: 0.25, anim: 83.85, total elapsed: 84.10.
 # Margerie_Terminus_LandsatAnim.mp4
 # n=465. Timing (sec): load: 0.25, anim: 179.70, total elapsed: 179.95.
+# Johns Hopkins_Terminus_LandsatAnim.mp4
+# n=453. Timing (sec): load: 0.48, anim: 145.27, total elapsed: 145.75.
+# Lamplugh_Terminus_LandsatAnim.mp4
+# n=439. Timing (sec): load: 0.20, anim: 232.83, total elapsed: 233.03.
