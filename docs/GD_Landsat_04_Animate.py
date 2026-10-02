@@ -65,17 +65,19 @@ def add_timestamp(image, timestamp):
 #############
 #setup
 #############
-folder_base = r'C:\Users\andyb\Documents\U\SEAN_Glacier-Dynamics' #os.path.join()
-#folder_shp = r'C:\Users\andyb\Documents\U\GEE-Courses\data' #get away from this...
-folder_land = r'C:\Users\andyb\Documents\U\GlacierLandsat'
+# folder_base = r'C:\Users\andyb\Documents\U\SEAN_Glacier-Dynamics' #os.path.join()
+folder_base = r'D:\SEAN_Glacier-Dynamics'
+###folder_shp = r'C:\Users\andyb\Documents\U\GEE-Courses\data' #get away from this...
+# folder_land = r'C:\Users\andyb\Documents\U\GlacierLandsat'
+folder_land = r'D:\KEEP AWAY from OneDrive\GlacierLandsat'
 file_path=os.path.join(folder_base,'glacierPropsLandsat.csv')
 
 glaciers = pd.read_csv(file_path) #contains Name, LatCenter, LonCenter, two types of bounding boxes (see GD_Landsat_01_Setup).
 glaciers['Name']
 
 #choose one glacier
-glacier = glaciers.iloc[3] #0=Margerie, 12=McBride
-glacierdf=glaciers.iloc[[3]]
+glacier = glaciers.iloc[26] #0=Margerie, 12=McBride
+glacierdf=glaciers.iloc[[26]]
 print('You chose: ' + glacier['Name'])
 glacierName_Region = glacier['Name'] + '_' + glacier['Region']
 folder_out=os.path.join(folder_land, glacierName_Region)
@@ -87,13 +89,15 @@ folder_out=os.path.join(folder_land, glacierName_Region)
 
 #choose to exclude SLC-off images from the animation
 flagExcludeSLC_off=True #True or False
+#choose to exclude certain path/row combos images from the animation
+# Set these below...
 flagExcludePR=True
 
 #Choose whether to load SLC-off
 #Load metadata from CSV
 if flagExcludeSLC_off & flagExcludePR:
-  file_meta = os.path.join(folder_out, glacierName_Region + '_LandsatMetadataExcludeSLC-offExcludeSLC-offExcludePath.csv')
-else if flagExcludeSLC_off:
+  file_meta = os.path.join(folder_out, glacierName_Region + '_LandsatMetadataExcludeSLC-offExcludePath.csv')
+elif flagExcludeSLC_off:
   file_meta = os.path.join(folder_out, glacierName_Region + '_LandsatMetadataExcludeSLC-off.csv')
 else:
   file_meta = os.path.join(folder_out, glacierName_Region + '_' + 'LandsatMetadata.csv')
@@ -152,7 +156,7 @@ if 'Keep?' not in mdf.columns:
 #construct folder and file names
 if flagExcludeSLC_off & flagExcludePR:
   file_mp4 = Path(folder_out,glacierName_Region + '_LandsatAnim.mp4')
-else if flagExcludeSLC_off:
+elif flagExcludeSLC_off:
   file_mp4 = Path(folder_out,glacierName_Region + '_LandsatAnimIncludeAllPathRow.mp4')
 else:
   file_mp4 = Path(folder_out,glacierName_Region + '_LandsatAnimInclude_SLC-offIncludeAllPathRow.mp4')
@@ -197,7 +201,8 @@ print(f"mdf is sorted ascending: {mdf['datetime'].is_monotonic_increasing}") # O
 #plain background: image = Image.new('RGB', (images[0].size[0], images[0].size[1]), color='#c18350')
 # image1=images[0] #or -1 for last image
 #get fresh copy of first image for background
-image = Image.open(mdf['ImagePath'].iloc[0])
+# image = Image.open(mdf['ImagePath'].iloc[0])
+image = Image.open(os.path.join(folder_out,'Images',mdf['ImageName'].iloc[0]))
 image_w=image.size[0] #not sure why, but image.size[0] doesn't work here - funny interaction effect? they both have same value at the console.
 image_h=image.size[1]
 gray = Image.new('RGB', (image_w, image_h), color='gray')
@@ -244,7 +249,9 @@ image.save(Path(folder_out,glacierName_Region+'_TitleSlide.png'))
 n_images=len(mdf)
 n_images
 #repeat title slide 15 times so it is readable
-image_files=list(mdf['ImagePath']) #kept it in a dataframe long enough, now going to list to match GD_TLAN.py
+# image_files=list(mdf['ImagePath']) #kept it in a dataframe long enough, now going to list to match GD_TLAN.py
+# image_files1=list(os.path.join(folder_out,'Images',mdf['ImageName'])) #fails
+image_files=[os.path.join(folder_out,'Images',fname) for fname in mdf['ImageName']]
 image_files=[str(Path(folder_out,glacierName_Region+'_TitleSlide.png'))]*15+image_files
 times=list(mdf['datetime'])
 times = [times[0]] * 15 + times
@@ -363,3 +370,5 @@ print(f"n={n_images}. Timing (sec): load: {t_load-t_start:.2f}, anim: {t_end - t
 # n=453. Timing (sec): load: 0.48, anim: 145.27, total elapsed: 145.75.
 # Lamplugh_Terminus_LandsatAnim.mp4
 # n=439. Timing (sec): load: 0.20, anim: 232.83, total elapsed: 233.03.
+# Bering_Terminus_LandsatAnim.mp4 (got it working on NPS rugged with images on external drive)
+# n=328. Timing (sec): load: 1.03, anim: 125.73, total elapsed: 126.76.
