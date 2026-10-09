@@ -65,19 +65,21 @@ def add_timestamp(image, timestamp):
 #############
 #setup
 #############
-# folder_base = r'C:\Users\andyb\Documents\U\SEAN_Glacier-Dynamics' #os.path.join()
-folder_base = r'D:\SEAN_Glacier-Dynamics'
-###folder_shp = r'C:\Users\andyb\Documents\U\GEE-Courses\data' #get away from this...
-# folder_land = r'C:\Users\andyb\Documents\U\GlacierLandsat'
-folder_land = r'D:\KEEP AWAY from OneDrive\GlacierLandsat'
+if os.path.isdir(r'C:\Users\andyb'):
+  folder_base = r'C:\Users\andyb\Documents\U\SEAN_Glacier-Dynamics' #os.path.join()
+  ###folder_shp = r'C:\Users\andyb\Documents\U\GEE-Courses\data' #get away from this...
+  folder_land = r'C:\Users\andyb\Documents\U\GlacierLandsat'
+else:
+  folder_base = r'D:\SEAN_Glacier-Dynamics'
+  folder_land = r'D:\KEEP AWAY from OneDrive\GlacierLandsat'
 file_path=os.path.join(folder_base,'glacierPropsLandsat.csv')
 
 glaciers = pd.read_csv(file_path) #contains Name, LatCenter, LonCenter, two types of bounding boxes (see GD_Landsat_01_Setup).
 glaciers['Name']
 
 #choose one glacier
-glacier = glaciers.iloc[26] #0=Margerie, 12=McBride
-glacierdf=glaciers.iloc[[26]]
+glacier = glaciers.iloc[34] #0=Margerie, 12=McBride
+# glacierdf=glaciers.iloc[[34]]
 print('You chose: ' + glacier['Name'])
 glacierName_Region = glacier['Name'] + '_' + glacier['Region']
 folder_out=os.path.join(folder_land, glacierName_Region)
