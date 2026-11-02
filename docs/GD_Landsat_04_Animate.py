@@ -2,7 +2,7 @@
 #
 #See also: GD_TLAN.R, GD_TLAN.py, and test_anim.py 
 #
-#This code modified from GD_TLAN.py, and borrowing from GD_Lands_03_Select etc.
+#This code modified from GD_TLAN.py, and borrowing from GD_Landsat_03_Select etc.
 #
 #Linear code structure instead of functions. Not sure if that will
 #impact performance or other things, but try it for now.
@@ -37,7 +37,10 @@ def add_timestamp(image, timestamp):
     draw = ImageDraw.Draw(image)
     # Choose a font and size (make sure to adjust the font path if necessary)
     try:
-        font = ImageFont.truetype(r"D:\U\clutter\NPSlogo\FrutigerLTStd\FrutigerLTStd-Black.otf", 72)  # Default font #was 144
+        if os.path.isdir(r'C:\Users\andyb'):
+          font = ImageFont.truetype(r"C:\Users\andyb\Documents\U\clutter\NPSlogo\FrutigerLTStd\FrutigerLTStd-Black.otf", 72)
+        else:
+          font = ImageFont.truetype(r"D:\U\clutter\NPSlogo\FrutigerLTStd\FrutigerLTStd-Black.otf", 72)  # Default font #was 144
     except IOError:
         font = ImageFont.load_default(72)  # Use default font if Frutiger is not found
     #text position (measured from top left in pixels)
@@ -78,7 +81,7 @@ glaciers = pd.read_csv(file_path) #contains Name, LatCenter, LonCenter, two type
 glaciers['Name']
 
 #choose one glacier
-glacier = glaciers.iloc[34] #0=Margerie, 12=McBride
+glacier = glaciers.iloc[8] #0=Margerie, 12=McBride
 # glacierdf=glaciers.iloc[[34]]
 print('You chose: ' + glacier['Name'])
 glacierName_Region = glacier['Name'] + '_' + glacier['Region']
@@ -224,7 +227,10 @@ text=' \n\n'.join([
   'Southeast Alaska Network, National Park Service'])
 # Optional: Load a font (default font if not specified)
 try:
-  font = ImageFont.truetype(r"D:\U\clutter\NPSlogo\FrutigerLTStd\FrutigerLTStd-Black.otf", 72) #was 144
+  if os.path.isdir(r'C:\Users\andyb'):
+    font = ImageFont.truetype(r"C:\Users\andyb\Documents\U\clutter\NPSlogo\FrutigerLTStd\FrutigerLTStd-Black.otf", 72)
+  else:
+    font = ImageFont.truetype(r"D:\U\clutter\NPSlogo\FrutigerLTStd\FrutigerLTStd-Black.otf", 72) #was 144
 except IOError:
   try:
     print('Frutiger font not found, trying Arial bold')
@@ -355,7 +361,6 @@ print(f"n={n_images}. Timing (sec): load: {t_load-t_start:.2f}, anim: {t_end - t
 #############
 #OLD: 20250818_McBride_1_Terminus_Wing_all.mp4
 #OLD: n=2399. Timing (sec): exif: 18.82, load: 6.18, anim: 3767.98, total elapsed: 3792.99.
-
 #malformed:
 # n=590. Timing (sec): load: 1771913641.61, anim: 8.42, total elapsed: 17.02.
 #line-by-line running code:
@@ -374,3 +379,4 @@ print(f"n={n_images}. Timing (sec): load: {t_load-t_start:.2f}, anim: {t_end - t
 # n=439. Timing (sec): load: 0.20, anim: 232.83, total elapsed: 233.03.
 # Bering_Terminus_LandsatAnim.mp4 (got it working on NPS rugged with images on external drive)
 # n=328. Timing (sec): load: 1.03, anim: 125.73, total elapsed: 126.76.
+
